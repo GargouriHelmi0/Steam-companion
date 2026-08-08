@@ -1,0 +1,14 @@
+.env
+**/.env
+
+__pycache__/
+*.pyc
+
+.venv/
+venv/
+
+**/test.html
+**/test.py
+
+.vscode/
+.idea/

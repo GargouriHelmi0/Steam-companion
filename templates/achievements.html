@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements | Steam Companion</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='achievements.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="/" class="nav-logo">Steam Companion</a>
+        <div class="nav-user">Player Name</div>
+    </nav>
+
+<div class="main-layout">
+    <!-- Timeline -->
+    <div class="timeline-panel">
+        <div class="timeline-header">
+            <h1>Your Gaming Story</h1>
+            <p>Every achievement, every milestone</p>
+        </div>
+
+        <div class="timeline-scroll">
+            {% for date, achievements_on_date in timeline.items() %}
+            <div class="date-group">
+
+                <div class="date-marker">
+                    <div class="date-line"></div>
+                    <div class="date-badge">
+                        <span class="date-day">{{ achievements_on_date[0].date.day }}</span>
+                        <span class="date-month">{{ achievements_on_date[0].date.month }}</span>
+                        <span class="date-year">{{ achievements_on_date[0].date.year }}</span>
+                    </div>
+                </div>
+
+                <div class="achievements-list">
+                    {% for achievement in achievements_on_date %}
+                    <div class="achievement-card" data-id="1" onclick="selectAchievement(this)">
+                        <div class="achievement-icon">
+                            <img src="{{ achievement.icon }}" alt="">
+                        </div>
+
+                        <div class="achievement-info">
+                            <h4>{{ achievement.name }}</h4>
+                            <p class="achievement-game">{{ achievement.game }}</p>
+                            <p class="achievement-desc">{{ achievement.cropped_description }}</p>
+                        </div>
+
+                        <div class="achievement-time">
+                            {{ achievement.date.time }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+       
+    <script>
+        let selectedAchievement = null;
+
+        function selectAchievement(card) {
+            document.querySelectorAll('.achievement-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            selectedAchievement = card;
+
+            switchTab('achievement');
+
+            const name = card.querySelector('h4').textContent;
+            const game = card.querySelector('.achievement-game').textContent;
+            const desc = card.querySelector('.achievement-desc').textContent;
+            const icon = card.querySelector('img').src;
+
+            document.getElementById('detail-name').textContent = name;
+            document.getElementById('detail-game').textContent = game;
+            document.getElementById('detail-desc').textContent = desc;
+            document.getElementById('detail-icon').src = icon;
+
+            document.getElementById('achievement-empty').hidden = true;
+            document.getElementById('achievement-detail').hidden = false;
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById('panel-' + tab).classList.add('active');
+        }
+    </script>
+</body>
+</html>

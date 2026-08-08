@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam Companion</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page">
+        <div class="left-side">
+            <div class="left-overlay"></div>
+            <div class="left-content">
+                <div class="logo">Steam Companion</div>
+            </div>
+        </div>
+
+        <div class="right-side">
+            <div class="right-bg"></div>
+            
+            <div class="login-box">
+                <div class="login-header">
+                    <h2>Welcome back</h2>
+                    <p>Enter your Steam ID to continue</p>
+                </div>
+
+                <form method="POST" action="/" id="loginForm">
+                    <div class="input-group">
+                        <label for="steam_id">Steam ID</label>
+                        <input 
+                            type="text"
+                            id="steam_id"
+                            name="steam_id"
+                            placeholder="e.g. 76561198000000000"
+                            autocomplete="off"
+                        >
+                        <span class="input-hint">Find it on your Steam profile URL</span>
+                    </div>
+
+                    <button type="submit" id="submitBtn">
+                        Continue
+                    </button>
+                </form>
+
+                <div class="login-footer">
+                    <p>We only access <strong>public</strong> profile data</p>
+                    <a href="#" id="guideLink">How do I find my Steam ID?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guide Modal -->
+    <div class="modal-overlay" id="guideModal">
+        <div class="modal">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <h3>How to Find Your Steam ID</h3>
+            
+            <div class="guide-step">
+                <span class="step-num">1</span>
+                <p>Open Steam and click your <strong>profile name</strong> in the top menu bar.</p>
+            </div>
+            
+            <div class="guide-step">
+                <span class="step-num">2</span>
+                <p>Select <strong>"View Profile"</strong> from the dropdown.</p>
+            </div>
+            
+            <div class="guide-step">
+                <span class="step-num">3</span>
+                <p>Right-click anywhere on the page and select <strong>"Copy Page URL"</strong>.</p>
+            </div>
+            
+            <div class="guide-step">
+                <span class="step-num">4</span>
+                <p>Paste the URL here — it will look like one of these:</p>
+                <div class="url-examples">
+                    <code>https://steamcommunity.com/id/<strong>yourname</strong></code>
+                    <code>https://steamcommunity.com/profiles/<strong>76561198...</strong></code>
+                </div>
+            </div>
+
+            <div class="guide-note">
+                <p>If your URL uses a custom name, we will look up the numeric ID for you automatically.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const btn = document.getElementById('submitBtn');
+        const guideLink = document.getElementById('guideLink');
+        const guideModal = document.getElementById('guideModal');
+        const modalClose = document.getElementById('modalClose');
+
+        form.addEventListener('submit', () => {
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+        });
+
+        guideLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            guideModal.classList.add('active');
+        });
+
+        modalClose.addEventListener('click', () => {
+            guideModal.classList.remove('active');
+        });
+
+        guideModal.addEventListener('click', (e) => {
+            if (e.target === guideModal) {
+                guideModal.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
