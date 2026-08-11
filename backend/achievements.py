@@ -3,6 +3,8 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 import time
+import sqlite3
+
 load_dotenv()
 steam_api_key = os.getenv("STEAM_API_KEY")
 
