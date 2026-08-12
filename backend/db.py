@@ -41,14 +41,37 @@ cursor.execute("""
             REFERENCES achievements(app_id, achievement_api_name)
     )
 """)
-def add_game(app_id):
-    pass
+
+def add_game(app_id,game_name):
+    cursor.execute("""
+    INSERT INTO games (app_id,game_name)
+    VALUES(?,?)
+    """,(app_id,game_name))
+def add_user(steam_id,steam_name):
+    cursor.execute("""
+        INSERT INTO users
+        VALUES(?,?)
+        """,(steam_id,steam_name))
+
 def get_game(app_id):
-    pass
-def add_achievement(app_id,achievement_info):
-    pass
-def add_user_achievement(user_id,achievement_api_name):
-    pass
+    cursor.execute("""
+        SELECT * FROM games
+        WHERE app_id = ?               
+        """,(app_id,))
+    return cursor.fetchone()
+
+def add_achievement(app_id,achievement_api_name,achievement_display_name,description,icon):
+    cursor.execute("""
+        INSERT INTO achievements (app_id,achievement_api_name,achievement_display_name,description,icon)
+        VALUES (?,?,?,?,?)               
+        """,(app_id,achievement_api_name,achievement_display_name,description,icon))
+
+
+def add_user_achievement(steam_id,app_id,achievement_api_name,unlocktime):
+    cursor.execute("""
+            INSERT INTO user_achievements (steam_id,app_id,achievement_api_name,unlocktime)
+            VALUES (?,?,?,?)               
+            """,(steam_id,app_id,achievement_api_name,unlocktime))
+
 
 conn.commit()
-conn.close()
