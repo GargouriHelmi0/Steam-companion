@@ -25,7 +25,7 @@ cursor.execute("""
     CREATE TABLE IF NOT EXISTS achievements (
         app_id INTEGER,
         achievement_api_name TEXT,
-        achievement_display_name TEXT NOT NULL,
+        achievement_display_name TEXT,
         description TEXT,
         icon TEXT,
         PRIMARY KEY (app_id, achievement_api_name),
@@ -46,94 +46,82 @@ cursor.execute("""
     )
 """)
 
-def add_game(app_id,game_name):
+def upsert_game(app_id, game_name):
     cursor.execute("""
-    INSERT INTO games (app_id,game_name)
-    VALUES(?,?)
-    """,(app_id,game_name))
-    conn.commit()
+        INSERT INTO games (app_id, game_name)
+        VALUES (?, ?)
+        ON CONFLICT (app_id) DO NOTHING
+    """, (app_id, game_name))
 
 
-def add_user(steam_id,steam_name,last_sync):
+def upsert_user(steam_id, steam_name, last_sync):
     cursor.execute("""
-        INSERT INTO users
-        VALUES(?,?,?)
-        """,(steam_id,steam_name,last_sync))
-    conn.commit()
+        INSERT INTO users (steam_id, steam_name, last_sync)
+        VALUES (?, ?, ?)
+        ON CONFLICT (steam_id) DO UPDATE SET
+            steam_name = excluded.steam_name,
+            last_sync = excluded.last_sync
+    """, (steam_id, steam_name, last_sync))
 
-def add_achievement(app_id,achievement_api_name,achievement_display_name,description,icon):
-    cursor.execute("""
-        INSERT INTO achievements (app_id,achievement_api_name,achievement_display_name,description,icon)
-        VALUES (?,?,?,?,?)               
-        """,(app_id,achievement_api_name,achievement_display_name,description,icon))
-    conn.commit()
 
-def add_user_achievement(steam_id,app_id,achievement_api_name,unlocktime):
+def upsert_achievement(app_id, achievement_api_name, achievement_display_name, description, icon):
     cursor.execute("""
-            INSERT INTO user_achievements (steam_id,app_id,achievement_api_name,unlocktime)
-            VALUES (?,?,?,?)               
-            """,(steam_id,app_id,achievement_api_name,unlocktime))
-    conn.commit()
+        INSERT INTO achievements (app_id, achievement_api_name, achievement_display_name, description, icon)
+        VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT (app_id, achievement_api_name) DO NOTHING
+    """, (app_id, achievement_api_name, achievement_display_name, description, icon))
+
+
+def upsert_user_achievement(steam_id, app_id, achievement_api_name, unlocktime):
+    cursor.execute("""
+        INSERT INTO user_achievements (steam_id, app_id, achievement_api_name, unlocktime)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT (steam_id, app_id, achievement_api_name) DO NOTHING
+    """, (steam_id, app_id, achievement_api_name, unlocktime))
 
 
 def get_game(app_id):
-    cursor.execute("""
-        SELECT * FROM games
-        WHERE app_id = ?               
-        """,(app_id,))
+    cursor.execute("SELECT * FROM games WHERE app_id = ?", (app_id,))
     return cursor.fetchone()
  
 def get_user(user_id):
     if user_id == 0:
-        cursor.execute("""
-                    SELECT * FROM users              
-                    """)
+        cursor.execute("SELECT * FROM users")
         return cursor.fetchall()
-    cursor.execute("""
-            SELECT * FROM users
-            WHERE steam_id = ?               
-            """,(user_id,))
+    cursor.execute("SELECT * FROM users WHERE steam_id = ?", (user_id,))
     return cursor.fetchone()
 
 def get_achievement(app_id, achievement_api_name):
     cursor.execute("""
-        SELECT *
-        FROM achievements
+        SELECT * FROM achievements
         WHERE app_id = ? AND achievement_api_name = ?
     """, (app_id, achievement_api_name))
-
     return cursor.fetchone()
 
 def get_user_achievement(user_id, app_id, achievement_api_name):
     cursor.execute("""
-        SELECT *
-        FROM user_achievements
-        WHERE steam_id = ?
-          AND app_id = ?
-          AND achievement_api_name = ?
+        SELECT * FROM user_achievements
+        WHERE steam_id = ? AND app_id = ? AND achievement_api_name = ?
     """, (user_id, app_id, achievement_api_name))
-
     return cursor.fetchone()
 
 def get_achievements_for_game(app_id):
-    cursor.execute("""
-            SELECT * FROM achievements
-            WHERE app_id = ?             
-            """,(app_id,))
+    cursor.execute("SELECT * FROM achievements WHERE app_id = ?", (app_id,))
     return cursor.fetchall()
 
-def get_user_achievements_for_game(user_id,app_id):
+def get_user_achievements_for_game(user_id, app_id):
     cursor.execute("""
-            SELECT * FROM user_achievements
-            WHERE app_id = ?  AND steam_id = ?             
-            """,(app_id,user_id))
+        SELECT * FROM user_achievements
+        WHERE app_id = ? AND steam_id = ?
+    """, (app_id, user_id))
     return cursor.fetchall()
 
-def update_sync(user_id,last_sync):
+def update_sync(user_id, last_sync):
     cursor.execute("""
-                UPDATE users
-                SET last_sync = ?  WHERE steam_id = ?             
-                """,(last_sync,user_id))
+        UPDATE users
+        SET last_sync = ?
+        WHERE steam_id = ?
+    """, (last_sync, user_id))
+
+def commit():
     conn.commit()
-
-

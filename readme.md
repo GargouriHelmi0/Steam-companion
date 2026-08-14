@@ -2,7 +2,7 @@
 
 A Flask web application that connects to a Steam profile and turns a player's achievements into a visual gaming timeline.
 
-The goal is to build a personal Steam dashboard that lets users explore their gaming history, achievements and statistics
+The goal is to build a personal Steam dashboard where users can explore their gaming history, achievements, and statistics.
 
 ## Features
 
@@ -12,13 +12,19 @@ The goal is to build a personal Steam dashboard that lets users explore their ga
 * Steam Web API integration
 * Retrieve owned games
 * Retrieve player achievements
+* Retrieve game achievement schemas
+* Retrieve Steam profile information
+* SQLite database for persistent data storage
+* Store users, games, achievements, and user achievements
+* Database relationships and foreign keys
+* Incremental database insertion using `ON CONFLICT`
+* Track the user's last synchronization time
 * Convert Steam achievement timestamps into readable dates and times
 * Group achievements by date
 * Display achievements in a timeline
 * Display achievement icons, names, games, descriptions, and unlock times
 * Interactive achievement selection
 * Flask/Jinja frontend
-
 
 ## Tech Stack
 
@@ -28,6 +34,7 @@ The goal is to build a personal Steam dashboard that lets users explore their ga
 * HTML
 * CSS
 * JavaScript
+* SQLite
 * Steam Web API
 * Requests
 * python-dotenv
@@ -36,24 +43,54 @@ The goal is to build a personal Steam dashboard that lets users explore their ga
 
 **MVP**
 
-The core Steam integration and achievement timeline are working. 
-The codebase is still changing frequently, so some features may be incomplete or unstable.
+The core Steam integration, database system, synchronization system, and achievement timeline are working.
 
-## Known Issues (for available features )
+The project is still under active development, with statistics and performance improvements planned for future versions.
 
-* Achievement retrieval can take a long time especially for profiles with many games.
+## Known Issues
+
+* Initial synchronization can take a long time for profiles with many games.
+* Steam API requests can be slow or unavailable for some games.
 * Some achievement data may be unavailable depending on the game.
 * The frontend is still being refined.
-* statistics are not implemented yet.
+* User statistics are not implemented yet.
+* Synchronization currently still makes many API requests even when most data is already stored locally.
 
-## Goal for the next version :
+## Future Goals
 
-- Optimising the game fetching process as it takes a long time 
-- Schema caching
-- Database data storage
-- Error handling
-- Input validation enhancements
+### Timeline
 
+* Make the timeline fully database-driven
+* Improve timeline filtering and sorting
+* Add more timeline interactions and statistics
+
+### Statistics
+
+* Basic user statistics
+* Achievement completion statistics
+* Games played and playtime statistics
+* Achievement progress statistics
+* Compare personal statistics with global Steam statistics
+
+### Synchronization
+
+* Incremental synchronization
+* Only fetch data that has changed since the previous sync
+* Improve schema caching
+* Reduce unnecessary Steam API requests
+* Improve synchronization error handling
+* Add a manual refresh/sync button
+* Add background synchronization
+* Allow synchronization to happen without making the user wait for the data
+* Improve handling of failed or unavailable Steam API requests
+
+### Performance
+
+* Optimize database queries
+* Reduce unnecessary API calls
+* Improve caching
+* Improve synchronization speed
+* Move expensive operations away from the main web request
 
 ## Installation
 
