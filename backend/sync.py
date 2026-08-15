@@ -13,6 +13,7 @@ def sync_user(steam_id):
     
     for game in owned_games.get("played_games", []):
         app_id, game_name = game[0], game[1]
+        db.upsert_user_game(steam_id,app_id)
         db.upsert_game(app_id, game_name)
         
         game_info = api.get_game_stats(app_id)
@@ -46,4 +47,4 @@ def sync_user(steam_id):
 
     db.update_sync(steam_id, int(time.time()))
     db.commit()
-
+sync_user(76561199591079656)
