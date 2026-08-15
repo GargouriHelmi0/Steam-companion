@@ -47,4 +47,3 @@ def sync_user(steam_id):
 
     db.update_sync(steam_id, int(time.time()))
     db.commit()
-sync_user(76561199591079656)
