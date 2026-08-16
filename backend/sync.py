@@ -1,5 +1,5 @@
-import db
-import api
+from backend import db
+from backend import api
 from datetime import datetime
 import time 
 
@@ -46,4 +46,3 @@ def sync_user(steam_id):
                 )
 
     db.update_sync(steam_id, int(time.time()))
-    db.commit()

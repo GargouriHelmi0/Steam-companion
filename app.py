@@ -1,9 +1,13 @@
 from flask import *
-from backend.achievements import steam_api_key
-from backend.achievements import achievements_timeline
+from backend.api import steam_api_key
+from backend.timeline import achievements_timeline
+from backend.timeline import achievements_timeline
 import requests
 import os
 from dotenv import load_dotenv
+import sqlite3
+from backend.db import auto_sync
+from backend.sync import sync_user
 
 app = Flask(__name__)
 app.secret_key = "123"
@@ -31,12 +35,17 @@ def achievements():
         return redirect(url_for("home"))
     steam_id = session["steam_id"]
     timeline =  achievements_timeline(steam_id)
-    #work
     return render_template("achievements.html",timeline = timeline)
+
+@app.route("/sync", methods=["POST"])
+def sync():
+    if "steam_id" not in session:
+        return jsonify({"error": "not logged in"}), 401
+
+    sync_user(session["steam_id"])
+    return jsonify({"status": "ok"})
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-
-    

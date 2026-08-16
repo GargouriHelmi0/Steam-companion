@@ -31,12 +31,11 @@ body {
     width: 100vw;
 }
 
-/* ========== LEFT SIDE ========== */
 
 .left-side {
     width: 55%;
     position: relative;
-    background-image: url("/static/isaacpic.jpg");
+    background-image: url("/static/background.jpg");
     background-size: cover;
     background-position: center;
     display: flex;
@@ -85,7 +84,6 @@ body {
     max-width: 380px;
 }
 
-/* ========== RIGHT SIDE ========== */
 
 .right-side {
     width: 45%;
@@ -113,14 +111,13 @@ body {
             rgba(42, 71, 94, 0.4) 50%,
             rgba(23, 26, 33, 0.95) 100%
         ),
-        url("/static/isaacpic.jpg");
+        url("/static/background.jpg");
     background-size: cover;
     background-position: center;
     filter: blur(20px) saturate(0.6);
     opacity: 0.5;
 }
 
-/* ========== LOGIN BOX ========== */
 
 .login-box {
     position: relative;
@@ -146,7 +143,6 @@ body {
     font-size: 15px;
 }
 
-/* ========== FORM ========== */
 
 .input-group {
     margin-bottom: 20px;
@@ -191,7 +187,6 @@ input:focus {
     margin-top: 6px;
 }
 
-/* ========== BUTTON ========== */
 
 button {
     width: 100%;
@@ -241,7 +236,6 @@ button:disabled {
     to { transform: rotate(360deg); }
 }
 
-/* ========== FOOTER ========== */
 
 .login-footer {
     margin-top: 28px;
@@ -268,7 +262,6 @@ button:disabled {
     text-decoration: underline;
 }
 
-/* ========== RESPONSIVE ========== */
 
 @media (max-width: 900px) {
     .left-side {

@@ -6,7 +6,7 @@ load_dotenv()
 steam_api_key = os.getenv("STEAM_API_KEY")
 
 def get_game_stats(game_id):
-    stats = requests.get(f"https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid={game_id}&key={steam_api_key}").json()["game"]
+    stats = requests.get(f"https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid={game_id}&key={steam_api_key}&l=en").json()["game"]
     return stats
 
 def get_user_info(user_id):

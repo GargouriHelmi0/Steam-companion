@@ -27,6 +27,29 @@ body {
     overflow: hidden;
 }
 
+.sync-btn {
+    margin-top: 4px;              
+    padding: 10px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--accent);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sync-btn:hover {
+    background: var(--accent-glow);
+    border-color: var(--accent);
+    color: var(--accent-hover);
+}
+
+.sync-btn:active {
+    transform: scale(0.97);
+}
 
 .top-nav {
     height: 56px;
@@ -72,6 +95,9 @@ body {
 }
 
 .timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     padding: 32px 32px 20px;
     border-bottom: 1px solid var(--border);
 }

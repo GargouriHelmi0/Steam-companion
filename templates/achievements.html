@@ -19,8 +19,12 @@
     <!-- Timeline -->
     <div class="timeline-panel">
         <div class="timeline-header">
-            <h1>Your Gaming Story</h1>
-            <p>Every achievement, every milestone</p>
+            <div>
+                <h1>Your Gaming Story</h1>
+                <p>Every achievement, every milestone</p>
+            </div>
+            
+            <button type="button" class="sync-btn" onclick="runSync()">Sync</button>
         </div>
 
         <div class="timeline-scroll">
@@ -93,6 +97,28 @@
             document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
             document.getElementById('panel-' + tab).classList.add('active');
         }
+    function runSync() {
+    const btn = document.querySelector('.sync-btn');
+    const originalText = btn.textContent;
+    
+    btn.textContent = 'Syncing...';
+    btn.disabled = true;
+    
+    fetch('/sync', { method: 'POST' })
+        .then(r => r.json())
+        .then(() => {
+            btn.textContent = 'Done!';
+            setTimeout(() => window.location.reload(), 600);
+        })
+        .catch(() => {
+            btn.textContent = 'Failed';
+            btn.disabled = false;
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }, 2000);
+        });
+    }
     </script>
 </body>
 </html>

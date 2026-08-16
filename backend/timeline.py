@@ -1,6 +1,6 @@
-import api 
+from backend import api 
 from  datetime import datetime
-import db
+from backend import db
 
 def sort_timeline_by_date(timeline):
     return sorted(timeline, key=lambda achievement: achievement["unlocktime"],reverse=True)
@@ -42,6 +42,3 @@ def achievements_timeline(user_id):
     timeline = sort_timeline_by_date(timeline)
     timeline = group_by_date(timeline)
     return timeline
-
-
-
