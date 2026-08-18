@@ -46,3 +46,4 @@ def sync_user(steam_id):
                 )
 
     db.update_sync(steam_id, int(time.time()))
+

@@ -86,7 +86,8 @@ body {
 
 .timeline-panel {
     width: 50%;
-    min-width: 380px;
+    margin-left: -10px;
+    min-width: 320px;
     max-width: 520px;
     background: var(--bg);
     border-right: 1px solid var(--border);
@@ -116,7 +117,7 @@ body {
 
 .timeline-scroll {
     flex: 1;
-    overflow-y: auto;
+    overflow-x: auto;
     padding: 24px 32px;
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
@@ -528,4 +529,59 @@ body {
     .stats-panel {
         height: 50vh;
     }
+}
+.games-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.game-progress-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.game-progress-name {
+    width: 180px;
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-bright);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+
+.game-progress-count {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+    width: 60px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.progress-empty {
+    font-size: 14px;
+    color: var(--text-dim);
+}
+.stat-card.most-active {
+    margin-top: 10px; 
 }

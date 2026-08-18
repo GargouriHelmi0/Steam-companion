@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import sqlite3
 from backend.db import auto_sync
 from backend.sync import sync_user
+from backend.stats import get_player_stats
 
 app = Flask(__name__)
 app.secret_key = "123"
@@ -35,7 +36,15 @@ def achievements():
         return redirect(url_for("home"))
     steam_id = session["steam_id"]
     timeline =  achievements_timeline(steam_id)
-    return render_template("achievements.html",timeline = timeline)
+    almost_complete = None
+    stats = get_player_stats(steam_id)
+    if stats:
+        almost_complete = stats.get("almost_complete")
+        almost_complete.sort(key=lambda g: g["percent"], reverse=True)
+        almost_complete = almost_complete[:6]
+    else :
+        almost_complete = []
+    return render_template("achievements.html",timeline = timeline,stats = stats ,almost_complete = almost_complete)
 
 @app.route("/sync", methods=["POST"])
 def sync():
@@ -49,3 +58,39 @@ def sync():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
+
+
+"""
+
+@app.route("/achievements")
+def achievements():
+    # ... your existing timeline/stats code ...
+
+    almost_complete = []
+    for game in games:  # wherever your per-game data lives
+        total = len(game.achievements)
+        unlocked = sum(1 for a in game.achievements if a.unlocked)
+        if total == 0:
+            continue
+        percent = round(unlocked / total * 100)
+        if 60 <= percent < 100:          # "almost" = 60%+, not yet done
+            almost_complete.append({
+                "name": game.name,
+                "unlocked": unlocked,
+                "total": total,
+                "percent": percent,
+            })
+
+    almost_complete.sort(key=lambda g: g["percent"], reverse=True)
+    almost_complete = almost_complete[:6]   # top 6 closest
+
+    return render_template("achievements.html",
+                           timeline=timeline,
+                           stats=stats,
+                           almost_complete=almost_complete)
+
+
+"""

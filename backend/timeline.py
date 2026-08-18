@@ -16,8 +16,8 @@ def group_by_date(timeline):
     return grouped
 
 def crop(s):
-    if s != None and len(s)>50:
-         s = s[:20]+".."
+    if s != None and len(s)>40:
+         s = s[:40]+".."
     return s
 def achievements_timeline(user_id):
     # returns list of dicts for the timeline ( achievement name , game name , description , date , time , icon )

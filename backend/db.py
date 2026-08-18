@@ -144,7 +144,70 @@ def get_timeline(steam_id):
               AND ua.steam_id = ?
         """, (steam_id,))
         return cursor.fetchall()
+
+def get_number_of_games_played(steam_id):
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+                    SELECT count(app_id)
+                    FROM user_games
+                    WHERE steam_id = ?
+            """, (steam_id,))
+        return cursor.fetchone()
+
+def get_number_of_achievements(steam_id):
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+                    SELECT count(app_id)
+                    FROM user_achievements
+                    WHERE steam_id = ?
+                """, (steam_id,))
+        return cursor.fetchone()
+
+def get_number_of_achievements_for_game(app_id):
+    with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                        SELECT count(app_id)
+                        FROM achievements
+                        WHERE app_id = ?
+                    """, (app_id,))
+            return cursor.fetchone()
     
+def get_game_name_from_id(app_id):
+    with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                SELECT game_name FROM games
+                WHERE app_id == ?
+                """,(app_id,)
+            )
+            return cursor.fetchone()
+
+def get_number_of_player_achievements_for_game(steam_id,app_id):
+     with get_db() as conn:
+                cursor = conn.cursor()
+                cursor.execute("""
+                            SELECT count(steam_id)
+                            FROM user_achievements
+                            WHERE steam_id = ? AND app_id = ?
+                        """, (steam_id,app_id))
+                return cursor.fetchone()
+     
+def get_user_games(steam_id):
+            with get_db() as conn:
+                cursor = conn.cursor()
+                cursor.execute("""
+                            SELECT app_id
+                            FROM user_games
+                            WHERE steam_id = ?
+                        """, (steam_id,))
+                return cursor.fetchall()
+
+
+
 def check_last_sync(steam_id):
     with get_db() as conn:
         cursor = conn.cursor()

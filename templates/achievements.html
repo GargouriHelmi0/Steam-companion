@@ -25,7 +25,7 @@
             </div>
             
             <button type="button" class="sync-btn" onclick="runSync()">Sync</button>
-        </div>
+        </div> <!-- /timeline-header -->
 
         <div class="timeline-scroll">
             {% for date, achievements_on_date in timeline.items() %}
@@ -37,8 +37,8 @@
                         <span class="date-day">{{ achievements_on_date[0].date.day }}</span>
                         <span class="date-month">{{ achievements_on_date[0].date.month }}</span>
                         <span class="date-year">{{ achievements_on_date[0].date.year }}</span>
-                    </div>
-                </div>
+                    </div> 
+                </div> 
 
                 <div class="achievements-list">
                     {% for achievement in achievements_on_date %}
@@ -56,16 +56,75 @@
                         <div class="achievement-time">
                             {{ achievement.date.time }}
                         </div>
-                    </div>
+                    </div> 
                     {% endfor %}
                 </div>
 
-            </div>
+            </div> 
             {% endfor %}
-        </div>
-    </div>
-</div>
-       
+        </div> 
+    </div> 
+
+    <!--STATS -->
+    <div class="stats-panel">
+            <div class="stats-tabs">
+                <button class="tab-btn active" onclick="switchTab('player')" id="tab-player">Player Stats</button>
+            </div> <!-- /stats-tabs -->
+
+            <div class="stats-content">
+                <!-- Player Stats Tab -->
+                <div class="tab-panel active" id="panel-player">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Achievements</div>
+                        <div class="stat-value">{{stats.total_achievements}}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Games Played</div>
+                        <div class="stat-value">{{stats.games_played}}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Average completion Rate</div>
+                        <div class="stat-value">{{stats.average_completion_rate}}%</div>
+                    </div>
+                    
+                    <!--to add later
+
+                    <div class="stat-card">
+                        <div class="stat-label">Rare Achievements</div>
+                        <div class="stat-value">{{stats.rare_achievements}}</div>
+                    </div>
+                    
+                    -->
+
+                    <!-- Almost complete games (wide card) -->
+                    <div class="stat-card wide">
+                        <div class="stat-label">Almost There</div>
+                        <div class="games-progress-list">
+                            {% for game in almost_complete %}
+                            <div class="game-progress-row">
+                                <span class="game-progress-name">{{ game.name }}</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: {{ game.percent }}%"></div>
+                                </div>
+                                <span class="game-progress-count">{{ game.unlocked }}/{{ game.total }}</span>
+                            </div> 
+                            {% else %}
+                            <p class="progress-empty">No games close to completion — go finish something!</p>
+                            {% endfor %}
+                        </div> 
+                    </div> 
+                    
+                    <div class="stat-card wide">
+                        <div class="stat-label">Most Active Day</div>
+                        <div class="stat-value">{{stats.most_active_day}}</div>
+                        <div class="stat-sub">{{stats.stats_unlocked_on_most_active_day}} ACHIEVEMENTS UNLOCKED</div>
+                    </div> 
+
+                </div> 
+            </div> 
+        </div> 
+    </div> 
+
     <script>
         let selectedAchievement = null;
 
