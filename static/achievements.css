@@ -585,3 +585,46 @@ body {
 .stat-card.most-active {
     margin-top: 10px; 
 }
+/* ── Gold progress bar for Perfect Games ── */
+.progress-fill.gold {
+    background: linear-gradient(90deg, #b8860b, #ffd700);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+
+/* ── Violet progress bar for Almost There ── */
+.progress-fill.almost {
+    background: linear-gradient(90deg, #7c3aed, #a78bfa);
+    box-shadow: 0 0 8px rgba(167, 139, 250, 0.25);
+}
+
+/* ── Timeline cards: gold border for perfect-game achievements ── */
+.achievement-card.gold {
+    border-color: rgba(255, 215, 0, 0.4);
+    background: linear-gradient(90deg, rgba(255,215,0,0.06) 0%, var(--bg-card) 60%);
+}
+.achievement-card.gold:hover {
+    border-color: rgba(255, 215, 0, 0.7);
+}
+.achievement-card.gold.active {
+    border-color: #ffd700;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
+}
+.achievement-card.gold.active::before {
+    background: #ffd700;
+}
+
+/* ── Timeline cards: violet border for almost-perfect achievements ── */
+.achievement-card.almost {
+    border-color: rgba(167, 139, 250, 0.35);
+    background: linear-gradient(90deg, rgba(167,139,250,0.06) 0%, var(--bg-card) 60%);
+}
+.achievement-card.almost:hover {
+    border-color: rgba(167, 139, 250, 0.6);
+}
+.achievement-card.almost.active {
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
+}
+.achievement-card.almost.active::before {
+    background: #a78bfa;
+}

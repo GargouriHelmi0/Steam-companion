@@ -10,7 +10,7 @@ def get_player_stats(steam_id):
     games_with_achievements = 0 
     user_timeline = timeline.achievements_timeline(steam_id)
     most_active_day = max([(day,len(user_timeline[day])) for day in user_timeline],key = lambda day_num: day_num[1])
-    print(most_active_day)
+    perfect_games = []
     if not games_owned:
         return None
     for game in games_owned:
@@ -29,14 +29,21 @@ def get_player_stats(steam_id):
                 "total": number_of_achievements_for_game,
                 "percent": round(game_completion_rate * 100)
             })
+        if (game_completion_rate == 1):
+                    perfect_games.append({
+                        "name": db.get_game_name_from_id(game)[0],
+                        "unlocked": number_of_player_achievements_for_game,
+                        "total": number_of_achievements_for_game,
+                        "percent": 100
+                    })
         average_completion_rate += game_completion_rate 
     average_completion_rate /= games_with_achievements
-    print(most_active_day[1])
     return {
         "games_played": games_played,
         "total_achievements": total_achievements,
         "average_completion_rate": round(average_completion_rate * 100),
         "almost_complete": almost_complete,
         "most_active_day": most_active_day[0],
-        "stats_unlocked_on_most_active_day" : most_active_day[1]
+        "stats_unlocked_on_most_active_day" : most_active_day[1],
+        "perfect_games" : perfect_games
     }

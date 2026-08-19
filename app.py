@@ -42,9 +42,13 @@ def achievements():
         almost_complete = stats.get("almost_complete")
         almost_complete.sort(key=lambda g: g["percent"], reverse=True)
         almost_complete = almost_complete[:6]
+        perfect_games = stats.get("perfect_games") 
+        perfect_games = perfect_games[:6]
+
     else :
         almost_complete = []
-    return render_template("achievements.html",timeline = timeline,stats = stats ,almost_complete = almost_complete)
+        perfect_games = []
+    return render_template("achievements.html",timeline = timeline,stats = stats ,almost_complete = almost_complete , perfect_games = perfect_games)
 
 @app.route("/sync", methods=["POST"])
 def sync():
@@ -62,35 +66,3 @@ if __name__ == "__main__":
 
 
 
-
-"""
-
-@app.route("/achievements")
-def achievements():
-    # ... your existing timeline/stats code ...
-
-    almost_complete = []
-    for game in games:  # wherever your per-game data lives
-        total = len(game.achievements)
-        unlocked = sum(1 for a in game.achievements if a.unlocked)
-        if total == 0:
-            continue
-        percent = round(unlocked / total * 100)
-        if 60 <= percent < 100:          # "almost" = 60%+, not yet done
-            almost_complete.append({
-                "name": game.name,
-                "unlocked": unlocked,
-                "total": total,
-                "percent": percent,
-            })
-
-    almost_complete.sort(key=lambda g: g["percent"], reverse=True)
-    almost_complete = almost_complete[:6]   # top 6 closest
-
-    return render_template("achievements.html",
-                           timeline=timeline,
-                           stats=stats,
-                           almost_complete=almost_complete)
-
-
-"""
