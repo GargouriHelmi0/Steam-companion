@@ -136,12 +136,19 @@ def get_timeline(steam_id):
     with get_db() as conn:
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT game_name, achievement_display_name, description, unlocktime, icon
-            FROM games g, achievements a, user_achievements ua
-            WHERE g.app_id = a.app_id
-              AND g.app_id = ua.app_id
-              AND a.achievement_api_name = ua.achievement_api_name
-              AND ua.steam_id = ?
+            SELECT g.app_id,
+                   a.achievement_api_name,
+                   g.game_name,
+                   a.achievement_display_name,
+                   a.description,
+                   ua.unlocktime,
+                   a.icon
+            FROM games g
+            JOIN achievements a ON g.app_id = a.app_id
+            JOIN user_achievements ua ON g.app_id = ua.app_id
+                                      AND a.achievement_api_name = ua.achievement_api_name
+            WHERE ua.steam_id = ?
+            ORDER BY ua.unlocktime DESC
         """, (steam_id,))
         return cursor.fetchall()
 
@@ -207,6 +214,18 @@ def get_user_games(steam_id):
                 return cursor.fetchall()
 
 
+def get_most_active_day(steam_id):
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT DATE(unlocktime, 'unixepoch') AS day, COUNT(*) AS cnt
+            FROM user_achievements
+            WHERE steam_id = ?
+            GROUP BY day
+            ORDER BY cnt DESC
+            LIMIT 1
+        """, (steam_id,))
+        return cursor.fetchone()
 
 def check_last_sync(steam_id):
     with get_db() as conn:
@@ -226,4 +245,3 @@ def auto_sync(steam_id):
     if check_last_sync(steam_id)[0] < time.time() - 2*24*60*60 :
         return True
     return False
-

@@ -12,7 +12,7 @@
 <body>
     <nav class="top-nav">
         <a href="/" class="nav-logo">Steam Companion</a>
-        <div class="nav-user">Player Name</div>
+        <div class="nav-user">{{ player_name }}</div>
     </nav>
 
 <div class="main-layout">
@@ -42,7 +42,14 @@
 
                 <div class="achievements-list">
                     {% for achievement in achievements_on_date %}
-                    <div class="achievement-card" data-game="{{ achievement.game_name }}" data-id="1" onclick="selectAchievement(this)">
+                    <div class="achievement-card" 
+                         data-game="{{ achievement.game_name }}" 
+                         data-app-id="{{ achievement.app_id }}"
+                         data-api-name="{{ achievement.api_name }}"
+                         data-unlock-date="{{ achievement.unlock_date }}"
+                         data-time-to-unlock="{{ achievement.time_to_unlock }}"
+                         data-full-desc="{{ achievement.full_description }}"
+                         onclick="selectAchievement(this)">
                         <div class="achievement-icon">
                             <img src="{{ achievement.icon }}" alt="">
                         </div>
@@ -69,29 +76,30 @@
     <div class="stats-panel">
         <div class="stats-tabs">
             <button class="tab-btn active" onclick="switchTab('player')" id="tab-player">Player Stats</button>
-        </div> <!-- /stats-tabs -->
+            <button class="tab-btn" onclick="switchTab('achievement')" id="tab-achievement">Achievement Stats</button>
+        </div> 
 
         <div class="stats-content">
             <!-- Player Stats Tab -->
             <div class="tab-panel active" id="panel-player">
                 <div class="stat-card">
                     <div class="stat-label">Total Achievements</div>
-                    <div class="stat-value">{{stats.total_achievements}}</div>
+                    <div class="stat-value">{{ stats.total_achievements }}</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Games Played</div>
-                    <div class="stat-value">{{stats.games_played}}</div>
+                    <div class="stat-value">{{ stats.games_played }}</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Average completion Rate</div>
-                    <div class="stat-value">{{stats.average_completion_rate}}%</div>
+                    <div class="stat-value">{{ stats.average_completion_rate }}%</div>
                 </div>
                 
                 <!--to add later
 
                 <div class="stat-card">
                     <div class="stat-label">Rare Achievements</div>
-                    <div class="stat-value">{{stats.rare_achievements}}</div>
+                    <div class="stat-value">{{ stats.rare_achievements }}</div>
                 </div>
                 
                 -->
@@ -135,10 +143,51 @@
                 
                 <div class="stat-card wide most-active">
                     <div class="stat-label">Most Active Day</div>
-                    <div class="stat-value">{{stats.most_active_day}}</div>
-                    <div class="stat-sub">achievements unlocked : {{stats.stats_unlocked_on_most_active_day}}</div>
+                    <div class="stat-value">{{ stats.most_active_day }}</div>
+                    <div class="stat-sub">achievements unlocked : {{ stats.stats_unlocked_on_most_active_day }}</div>
                 </div> 
+            </div> <!-- /panel-player -->
 
+            <!-- Achievement Stats Tab -->
+            <div class="tab-panel" id="panel-achievement">
+                <div class="empty-state" id="achievement-empty">
+                    <div class="empty-icon">🏆</div>
+                    <h3>Select an Achievement</h3>
+                    <p>Click any achievement from the timeline to see detailed stats about it.</p>
+                </div>
+
+                <div class="achievement-detail" id="achievement-detail" hidden>
+                    <div class="detail-header">
+                        <img src="" alt="" id="detail-icon">
+                        <div class="detail-title">
+                            <h2 id="detail-name"></h2>
+                            <p id="detail-game"></p>
+                        </div>
+                    </div>
+
+                    <div class="detail-stats">
+                        <div class="detail-stat">
+                            <span class="detail-label">Global Unlock Rate</span>
+                            <span class="detail-value" id="detail-rate">...</span>
+                        </div>
+                        <div class="detail-stat">
+                            <span class="detail-label">Your Unlock Date</span>
+                            <span class="detail-value" id="detail-date"></span>
+                        </div>
+                        <div class="detail-stat">
+                            <span class="detail-label">Time to Unlock (this is just an estimate and wont work for all games)</span>
+                            <span class="detail-value" id="detail-time"></span>
+                        </div>
+                        <div class="detail-stat">
+                            <span class="detail-label">Rarity Tier</span>
+                            <span class="detail-value" id="detail-rarity">...</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-description">
+                        <p id="detail-desc"></p>
+                    </div>
+                </div>
             </div> 
         </div> 
     </div> 
@@ -156,16 +205,44 @@
 
             const name = card.querySelector('h4').textContent;
             const game = card.querySelector('.achievement-game').textContent;
-            const desc = card.querySelector('.achievement-desc').textContent;
             const icon = card.querySelector('img').src;
+            const appId = card.dataset.appId;
+            const apiName = card.dataset.apiName;
+
+            const fullDesc = card.dataset.fullDesc;
+            const unlockDate = card.dataset.unlockDate;
+            const timeToUnlock = card.dataset.timeToUnlock;
 
             document.getElementById('detail-name').textContent = name;
             document.getElementById('detail-game').textContent = game;
-            document.getElementById('detail-desc').textContent = desc;
+            document.getElementById('detail-desc').textContent = fullDesc || '';
             document.getElementById('detail-icon').src = icon;
+
+            document.getElementById('detail-date').textContent = unlockDate || '';
+            document.getElementById('detail-time').textContent = (timeToUnlock || '0') + ' hours';
+
+            // Reset API-dependent fields to loading state
+            const rateEl = document.getElementById('detail-rate');
+            const rarityEl = document.getElementById('detail-rarity');
+            rateEl.textContent = '...';
+            rarityEl.textContent = '...';
+            rarityEl.className = 'detail-value';
 
             document.getElementById('achievement-empty').hidden = true;
             document.getElementById('achievement-detail').hidden = false;
+
+            // Fetch stats on demand
+            fetch(`/api/achievement-stats/${appId}/${apiName}`)
+                .then(r => r.json())
+                .then(data => {
+                    rateEl.textContent = data.global_rate + '%';
+                    rarityEl.textContent = data.rarity;
+                    rarityEl.className = 'detail-value ' + data.rarity;
+                })
+                .catch(() => {
+                    rateEl.textContent = 'N/A';
+                    rarityEl.textContent = 'unknown';
+                });
         }
 
         function switchTab(tab) {
@@ -175,41 +252,41 @@
             document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
             document.getElementById('panel-' + tab).classList.add('active');
         }
-    function runSync() {
-    const btn = document.querySelector('.sync-btn');
-    const originalText = btn.textContent;
-    
-    btn.textContent = 'Syncing...';
-    btn.disabled = true;
-    
-    fetch('/sync', { method: 'POST' })
-        .then(r => r.json())
-        .then(() => {
-            btn.textContent = 'Done!';
-            setTimeout(() => window.location.reload(), 600);
-        })
-        .catch(() => {
-            btn.textContent = 'Failed';
-            btn.disabled = false;
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }, 2000);
-        });
-    }
 
-    // Color timeline achievements by game completion status
-    const perfectGames = new Set([{% for g in perfect_games %}"{{ g.name }}",{% endfor %}]);
-    const almostGames  = new Set([{% for g in almost_complete %}"{{ g.name }}",{% endfor %}]);
-
-    document.querySelectorAll('.achievement-card').forEach(card => {
-        const game = card.getAttribute('data-game');
-        if (perfectGames.has(game)) {
-            card.classList.add('gold');
-        } else if (almostGames.has(game)) {
-            card.classList.add('almost');
+        function runSync() {
+            const btn = document.querySelector('.sync-btn');
+            const originalText = btn.textContent;
+            
+            btn.textContent = 'Syncing...';
+            btn.disabled = true;
+            
+            fetch('/sync', { method: 'POST' })
+                .then(r => r.json())
+                .then(() => {
+                    btn.textContent = 'Done!';
+                    setTimeout(() => window.location.reload(), 600);
+                })
+                .catch(() => {
+                    btn.textContent = 'Failed';
+                    btn.disabled = false;
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                    }, 2000);
+                });
         }
-    });
+
+        const perfectGames = new Set([{% for g in perfect_games %}"{{ g.name }}",{% endfor %}]);
+        const almostGames  = new Set([{% for g in almost_complete %}"{{ g.name }}",{% endfor %}]);
+
+        document.querySelectorAll('.achievement-card').forEach(card => {
+            const game = card.getAttribute('data-game');
+            if (perfectGames.has(game)) {
+                card.classList.add('gold');
+            } else if (almostGames.has(game)) {
+                card.classList.add('almost');
+            }
+        });
     </script>
 </body>
 </html>

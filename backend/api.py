@@ -27,3 +27,15 @@ def get_owned_games(user_id):
 def get_achievements_for_player(user_id , game_id):
     return requests.get(f"https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid={game_id}&key={steam_api_key}&steamid={user_id}").json()
 
+def get_global_percentages_for_game_achievements(app_id):
+    global_percentages = requests.get(f"https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid={app_id}")
+    if global_percentages.status_code == 200:
+        global_percentages = global_percentages.json()["achievementpercentages"]["achievements"]
+        return {
+                achievement["name"]: float(achievement["percent"])
+                for achievement in global_percentages
+            }
+    else :
+        return {} 
+    
+
