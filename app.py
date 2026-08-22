@@ -11,7 +11,7 @@ from backend.stats import get_player_stats
 from backend import api
 
 app = Flask(__name__)
-app.secret_key = "123"
+app.secret_key = os.environ["SECRET_KEY"]
 
 def valid(steam_id):
     resp = requests.get(f"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key={steam_api_key}&steamids={steam_id}").json()
@@ -44,7 +44,7 @@ def achievements():
 
     perfect_games = stats.get("perfect_games", []) if stats else []
     perfect_games.sort(key=lambda g: g["percent"], reverse=True)
-    perfect_games = perfect_games[:6]
+  
 
     user = get_user(steam_id)
     player_name = user[1] if user else "Player"

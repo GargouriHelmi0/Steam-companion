@@ -28,16 +28,10 @@ The goal is to build a personal Steam dashboard where users can explore their ga
 
 ## Tech Stack
 
-* Python
-* Flask
-* Jinja2
-* HTML
-* CSS
-* JavaScript
-* SQLite
-* Steam Web API
-* Requests
-* python-dotenv
+- Python, Flask, Jinja2
+- SQLite
+- Steam Web API, Requests
+- HTML, CSS, JavaScript
 
 ## Project Status
 
@@ -51,26 +45,9 @@ The project is still under active development, with statistics and performance i
 
 * Initial synchronization can take a long time for profiles with many games.
 * Steam API requests can be slow or unavailable for some games.
-* Some achievement data may be unavailable depending on the game.
-* The frontend is still being refined.
-* User statistics are not implemented yet.
 * Synchronization currently still makes many API requests even when most data is already stored locally.
 
 ## Future Goals
-
-### Timeline
-
-* Make the timeline fully database-driven
-* Improve timeline filtering and sorting
-* Add more timeline interactions and statistics
-
-### Statistics
-
-* Basic user statistics
-* Achievement completion statistics
-* Games played and playtime statistics
-* Achievement progress statistics
-* Compare personal statistics with global Steam statistics
 
 ### Synchronization
 
@@ -78,19 +55,19 @@ The project is still under active development, with statistics and performance i
 * Only fetch data that has changed since the previous sync
 * Improve schema caching
 * Reduce unnecessary Steam API requests
-* Improve synchronization error handling
-* Add a manual refresh/sync button
-* Add background synchronization
+* Improve error handling
 * Allow synchronization to happen without making the user wait for the data
 * Improve handling of failed or unavailable Steam API requests
 
 ### Performance
 
-* Optimize database queries
-* Reduce unnecessary API calls
 * Improve caching
 * Improve synchronization speed
-* Move expensive operations away from the main web request
+
+### Functionality
+
+* Add more statistics 
+
 
 ## Installation
 

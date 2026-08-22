@@ -43,7 +43,7 @@ def achievements_timeline(user_id):
             "name": crop(display_name, 32),
             "full_name": display_name,
             "full_description": description or "",
-            "cropped_description": crop(description, 40),
+            "cropped_description": crop(description, 30) or "",
             "icon": icon,
             "unlocktime": unlocktime,
             "unlock_date": date.strftime("%b %d, %Y"),
@@ -59,3 +59,5 @@ def achievements_timeline(user_id):
 
     timeline = sort_timeline_by_date(timeline)
     return group_by_date(timeline)
+
+

@@ -146,7 +146,7 @@ def get_timeline(steam_id):
             FROM games g
             JOIN achievements a ON g.app_id = a.app_id
             JOIN user_achievements ua ON g.app_id = ua.app_id
-                                      AND a.achievement_api_name = ua.achievement_api_name
+            AND a.achievement_api_name = ua.achievement_api_name
             WHERE ua.steam_id = ?
             ORDER BY ua.unlocktime DESC
         """, (steam_id,))
