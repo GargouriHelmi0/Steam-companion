@@ -53,7 +53,7 @@ def init_db():
                 app_id INTEGER,
                 PRIMARY KEY (steam_id, app_id),
                 FOREIGN KEY (steam_id) REFERENCES users(steam_id),
-                FOREIGN KEY (app_id) REFERENCES achievements(app_id)
+                FOREIGN KEY (app_id) REFERENCES games(app_id)
             );
         """)
         conn.commit()

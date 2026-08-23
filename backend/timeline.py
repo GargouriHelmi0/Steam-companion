@@ -47,6 +47,7 @@ def achievements_timeline(user_id):
             "icon": icon,
             "unlocktime": unlocktime,
             "unlock_date": date.strftime("%b %d, %Y"),
+            # to add : change to days if time to unlock more than 24 hours
             "time_to_unlock": round((unlocktime - first_unlock[app_id]) / 3600, 1),
             "date": {
                 "day": date.strftime("%d"),
@@ -59,5 +60,3 @@ def achievements_timeline(user_id):
 
     timeline = sort_timeline_by_date(timeline)
     return group_by_date(timeline)
-
-
