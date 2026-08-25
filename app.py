@@ -9,9 +9,18 @@ from backend.db import auto_sync, get_user
 from backend.sync import sync_user
 from backend.stats import get_player_stats
 from backend import api
+from backend.db import get_achievements_by_day
 
 app = Flask(__name__)
 app.secret_key = os.environ["SECRET_KEY"]
+
+def group_by_date(day_count):
+    grouped = {}
+    for day in day_count:
+        date = day[0]         
+        count = day[1]         
+        grouped[date] = count  
+    return grouped
 
 def valid(steam_id):
     resp = requests.get(f"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key={steam_api_key}&steamids={steam_id}").json()
@@ -48,6 +57,12 @@ def achievements():
 
     user = get_user(steam_id)
     player_name = user[1] if user else "Player"
+    dayCounts = get_achievements_by_day(steam_id)
+    print(dayCounts)
+    if dayCounts is None:
+        dayCounts = {}
+    else:
+        dayCounts = group_by_date(dayCounts)
 
     return render_template(
         "achievements.html",
@@ -55,7 +70,8 @@ def achievements():
         stats=stats,
         almost_complete=almost_complete,
         perfect_games=perfect_games,
-        player_name=player_name
+        player_name=player_name,
+        day_counts = dayCounts
     )
 
 @app.route("/sync", methods=["POST"])

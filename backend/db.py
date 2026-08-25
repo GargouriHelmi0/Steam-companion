@@ -237,6 +237,20 @@ def check_last_sync(steam_id):
         """, (steam_id,))
         return cursor.fetchone()
 
+def get_achievements_by_day(steam_id):
+     with get_db() as conn:
+                 cursor = conn.cursor()
+                 cursor.execute(
+                     """
+                     SELECT date(unlocktime, 'unixepoch'),count(*)
+                     FROM user_achievements
+                     WHERE steam_id = ?
+                     GROUP BY date(unlocktime, 'unixepoch')
+                     """,(steam_id,)
+                 )
+                 return cursor.fetchall()
+
+
 def commit():
     with get_db() as conn:
         conn.commit()

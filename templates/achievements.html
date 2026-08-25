@@ -148,6 +148,13 @@
                     <div class="stat-value">{{ stats.most_active_day }}</div>
                     <div class="stat-sub">achievements unlocked : {{ stats.stats_unlocked_on_most_active_day }}</div>
                 </div> 
+                
+                <div class="stat-card">
+                    <div class="stat-label">Your current progress this year</div>
+                    <div id="heatmap"></div>
+                </div>
+
+
             </div> <!-- /panel-player -->
 
             <!-- Achievement Stats Tab -->
@@ -224,7 +231,7 @@
             document.getElementById('detail-date').textContent = unlockDate || '';
             document.getElementById('detail-time').textContent = (timeToUnlock || '0') + ' hours';
 
-            // Reset API-dependent fields to loading state
+            // loading state
             const rateEl = document.getElementById('detail-rate');
             const rarityEl = document.getElementById('detail-rarity');
             rateEl.textContent = '...';
@@ -290,6 +297,47 @@
                 card.classList.add('almost');
             }
         }); 
+
+    const dayCounts = {{ day_counts | tojson }};
+
+    function generate_heatmap(dayCounts) {
+    const box = document.getElementById("heatmap");
+    
+    const days = [];
+    const today = new Date();
+    for (let i = 364; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const str = d.toISOString().split('T')[0];  
+        days.push(str);
+    }
+    
+    for (let i = 0; i < days.length; i += 7) {
+
+        const week = document.createElement("div");
+        week.className = "week";
+        
+        for (let j = 0; j < 7; j++) {
+            const dayStr = days[i + j];
+            if (!dayStr) break;
+            
+            const count = dayCounts[dayStr] || 0;
+            
+            const square = document.createElement("div");
+            square.className = "day";
+    
+            if (count >= 10) square.classList.add("l4");
+            else if (count >= 6) square.classList.add("l3");
+            else if (count >= 3) square.classList.add("l2");
+            else if (count >= 1) square.classList.add("l1");
+            
+            square.title = `${count} Achievements`;
+            week.appendChild(square);
+        }
+        box.appendChild(week);
+    }
+}
+generate_heatmap(dayCounts)
     </script>
 </body>
 </html>

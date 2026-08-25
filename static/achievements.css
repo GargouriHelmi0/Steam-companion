@@ -628,3 +628,23 @@ body {
 .achievement-card.almost.active::before {
     background: #a78bfa;
 }
+#heatmap {
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+}
+.week {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.day {
+    width: 10px;
+    height: 10px;
+    background: #16202d;      
+    border-radius: 2px;
+}
+.l1 { background: #1e3a4f; }  
+.l2 { background: #2a5a7a; }  
+.l3 { background: #3d8bb5; }  
+.l4 { background: #66c0f4; }  
